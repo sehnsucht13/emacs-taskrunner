@@ -38,6 +38,7 @@ It can be used for the following systems/frontends listed below.
 - [X] Jake
 - [X] Apache ant
 - [X] mix
+- [X] clojure-cli
 - [X] leinengen
 - [X] rake
 - [X] Make
