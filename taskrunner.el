@@ -90,6 +90,7 @@
 (require 'taskrunner-ruby)
 (require 'taskrunner-static-targets)
 (require 'taskrunner-mix)
+(require 'taskrunner-clojure-cli)
 (require 'taskrunner-leiningen)
 (require 'taskrunner-general)
 
@@ -421,6 +422,9 @@ to a single file."
     (if (member "mix.exs" proj-root-files)
         (push (list 'MIX (expand-file-name "mix.exs" DIR)) files))
 
+    (if (member "deps.edn" proj-root-files)
+        (push (list 'CLOJURE-CLI (expand-file-name "deps.edn" DIR)) files))
+
     (if (member "project.clj" proj-root-files)
         (push (list 'LEIN (expand-file-name "project.clj" DIR)) files))
 
@@ -530,6 +534,9 @@ updating the cache."
 
     (if (member "mix.exs" work-dir-files)
         (setq tasks (append tasks (taskrunner-get-mix-tasks DIR))))
+
+    (if (member "deps.edn" work-dir-files)
+        (setq tasks (append tasks (taskrunner-get-clojure-cli-tasks DIR))))
 
     (if (member "project.clj" work-dir-files)
         (setq tasks (append tasks (taskrunner-get-leiningen-tasks DIR))))
@@ -818,6 +825,8 @@ from the build cache."
            (setq command (concat "npx" " " taskrunner-program " " task-name)))
           ((string-equal "dobi" taskrunner-program)
            (setq command (concat taskrunner-dobi-bin-name " " task-name)))
+          ((string-equal "clojure" taskrunner-program)
+           (setq command (concat "clojure" " " (string-join (cdr (split-string task-name)) " "))))
           (t
            (setq command (concat taskrunner-program " " task-name))))
 
